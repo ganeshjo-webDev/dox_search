@@ -3,8 +3,7 @@ import { KendraClient, QueryCommand } from "@aws-sdk/client-kendra"; // ES Modul
 // Load the AWS SDK for Node.js
 var AWS = require("aws-sdk");  
 const fetchSearchResults = async (searchTerm) => {
-  console.log(process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID);
-  console.log(process.env.NEXT_PUBLIC_AWS_DB_INDEX_ID);
+
   const SESConfig = {
     // apiVersion: "2010-12-01",
     apiVersion: process.env.NEXT_PUBLIC_AWS_API_VERSION,
@@ -47,7 +46,7 @@ const fetchSearchResults = async (searchTerm) => {
     IndexId: process.env.NEXT_PUBLIC_AWS_DB_INDEX_ID,
     QueryText: searchTerm,
   };
-  console.log(input); 
+  
   const command = new QueryCommand(input);
   const searchPromise = await client.send(command);
  

@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Link from 'next/link';
 import fetchSearchResults from '../api/kendra';
-import { setQuery, setResults, setLoading, setError } from '../lib/features/searchSlice';
+import { setQuery, setResults, setLoading, setError, setIsSearchResultFound } from '../lib/features/searchSlice';
 
 export function SearchInput() {
   const searchTerm = useSelector((state) => state.search.query);
@@ -14,55 +13,45 @@ export function SearchInput() {
   const handleSearch = (event) => {
     event.preventDefault();
     dispatch(setResults([]));
+    dispatch(setError(null));
+    dispatch(setIsSearchResultFound('nope'));
+    getSearchResults();
+  };
+
+  const getSearchResults = () => {
     dispatch(setLoading(true));
     const searchPromise = fetchSearchResults(searchTerm);
     searchPromise.then(function(response){
-      console.log(response)
-      dispatch(setResults(response.ResultItems));
+      console.log(response);
       dispatch(setLoading(false));
+      dispatch(setResults(response.ResultItems));
+      dispatch(setIsSearchResultFound(response.ResultItems.length > 0));
     }, function(err) {
       console.log(err);
-      dispatch(setError(err.__type + ': ' + err.message));
       dispatch(setLoading(false));
-      return err;
+      dispatch(setError(err.__type + ': ' + err.message));
+      dispatch(setIsSearchResultFound(false));
     })
-  };
+  }
 
   return (
     <>
-    <form onSubmit={handleSearch} className="flex items-center">
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={(e) => dispatch(setQuery(e.target.value))}
-        className="px-4 py-2 border borde-gray-300 rounded-md mr-2"
-      />
-      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">
-        Search
-      </button>
-    </form>
-    {isSearchInProgress && <div>Loading...</div>}
-    {!isSearchInProgress && searchTerm && <div>Showing search results for {searchTerm}</div>}
+    <div className="shadow-md">
+      <form onSubmit={handleSearch} className="items-center space-y-4 px-4 py-2">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => dispatch(setQuery(e.target.value))}
+          className="px-4 py-2 border borde-gray-300 rounded-md mr-2"
+        />
+        <button type="submit" className="px-4 py-2 bg-indigo-500 text-white rounded-md">
+          Search
+        </button>
+      </form>
+      {isSearchInProgress && <div className="italic space-y-4">Searching...</div>}
+      {!isSearchInProgress && searchTerm && <div className="italic">Showing search results for '{searchTerm}'</div>}
+    </div>
     </>
-  );
-}
-
-export function SearchResults() {
-  const searchResults = useSelector((state) => state.search.searchResults);
-  const searchError = useSelector((state) => state.search.error);
-  const searchQuery = useSelector((state) => state.search.query);
-  return (
-      <>
-        { searchResults && searchResults.length > 0 ? searchResults.map((result) => (    
-              <div className="row py-2">
-                <div className="row-span-1 text-decoration-thickness: 1px;">{result.DocumentTitle.Text}</div>
-                 <div className="row-span-1"> <Link href={result.DocumentURI} className="text-blue-500 hover:underline" target="_blank">
-                    {result.DocumentURI}
-                  </Link>
-                </div>
-              </div>
-          )) : <div className="grid-flow-row">{searchError}</div>}
-      </>
   );
 }
