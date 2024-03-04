@@ -12,6 +12,11 @@ export function SearchInput() {
 
   const handleSearch = (event) => {
     event.preventDefault();
+    if (searchTerm === '') {
+      dispatch(setIsSearchResultFound(false));
+      dispatch(setError('Please enter a search term.'));
+      return;
+    }
     dispatch(setResults([]));
     dispatch(setError(null));
     dispatch(setIsSearchResultFound('nope'));
@@ -36,7 +41,7 @@ export function SearchInput() {
 
   return (
     <>
-    <div className="shadow-md">
+    <div className="shadow-md bg-slate-200">
       <form onSubmit={handleSearch} className="items-center space-y-4 px-4 py-2">
         <input
           type="text"

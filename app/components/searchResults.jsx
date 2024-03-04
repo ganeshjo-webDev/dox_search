@@ -10,9 +10,9 @@ export function SearchResults() {
     const isSearchResultFound = useSelector((state) => state.search.isSearchResultFound);
     return (
         <>
-          <div className="shadow-md mt-8">
+          <div className="shadow-md mt-8 bg-stone-200">
             { isSearchResultFound ? searchResults.map((result) => (    
-                <div className="row py-2">
+                <div className="pl-4 row py-2">
                   <div className="row-span-1 text-sm font-bold">{result.DocumentTitle.Text}</div>
                    <div className="row-span-1 underline"> <Link href={result.DocumentURI} className="text-blue-500 hover:underline" target="_blank">
                       {result.DocumentURI}
