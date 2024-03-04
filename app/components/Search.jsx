@@ -8,6 +8,7 @@ import { setQuery, setResults, setLoading, setError, setIsSearchResultFound } fr
 export function SearchInput() {
   const searchTerm = useSelector((state) => state.search.query);
   const isSearchInProgress = useSelector((state) => state.search.loading);
+  const isSearchResultFound = useSelector((state) => state.search.isSearchResultFound);
   const dispatch = useDispatch();
 
   const handleSearch = (event) => {
@@ -55,7 +56,8 @@ export function SearchInput() {
         </button>
       </form>
       {isSearchInProgress && <div className="italic space-y-4">Searching...</div>}
-      {!isSearchInProgress && searchTerm && <div className="italic">Showing search results for '{searchTerm}'</div>}
+      {/* {!isSearchResultFound && !isSearchInProgress && <div className="italic">Typing...</div>} */}
+      {isSearchResultFound===true && <div className="italic">Showing search results for '{searchTerm}'</div>}
     </div>
     </>
   );

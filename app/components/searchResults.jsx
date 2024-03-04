@@ -10,7 +10,7 @@ export function SearchResults() {
     const isSearchResultFound = useSelector((state) => state.search.isSearchResultFound);
     return (
         <>
-          <div className="shadow-md mt-8 bg-stone-200">
+          <div className="shadow-md mt-8 bg-stone-2 00">
             { isSearchResultFound ? searchResults.map((result) => (    
                 <div className="pl-4 row py-2">
                   <div className="row-span-1 text-sm font-bold">{result.DocumentTitle.Text}</div>
